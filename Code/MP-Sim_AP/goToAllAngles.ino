@@ -47,7 +47,12 @@ void getAngles(){
     char c = 0;
     while(c != '$') c = Serial1.read();  //throw away till '$'           
     // Using parseInt to save the chars serialRead to vars as floats floats with two decimals
-    for(int i = 0;i<3;i++) actAng[i] = Serial1.parseInt() / 100.0;
+    //Serial.print("In getAngles() actAng[] = ");
+    for(int i = 0;i<3;i++){ 
+      actAng[i] = Serial1.parseInt() / 100.0;
+      //Serial.print(actAng[i]); Serial.print(", ");
+    }
+    //Serial.print("\n");
     timeLastAngles = micros(); 
   }
 }

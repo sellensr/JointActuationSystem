@@ -27,7 +27,7 @@ void tensionMotors(float t, float tOut = 15.0){
   unsigned long started = micros();
   while(buttonStatus(4) == 0 && micros()-started < tOut * 1000000){
     getAngles();
-    if(counts++ == 0) showAngleStatus(verboseMask + posMask + frcMask);
+    if(counts++ == 0) showAngleStatus(verboseMask + posMask + frcMask + actMask);
     for(int i = 0;i<NCH;i++){
       if(i < NCH/2) tension(i, t);      // lower ones at START_TENSION
       else tension(i, t + INC_TENSION); // upper ones at a little higher for gravity
@@ -128,7 +128,7 @@ void exerciseMotors(int dir) {
     setMtrSpeed(i, 0);
     getAngles();
     delay(del);
-    showAngleStatus(verboseMask + posMask + frcMask);
+    showAngleStatus(verboseMask + posMask + frcMask + actMask);
   }
 }
 
@@ -139,7 +139,7 @@ void extendMotors(float tOut = 10.0) { // extend all motors to limit
     Serial.print("Extending "); Serial.println(i);
     updateMotorPos();
     while (latestPos[i] < outPos[i] && micros()-started < tOut * 1000000) {
-      if(counts++ == 0) showAngleStatus(verboseMask + posMask + frcMask);
+      if(counts++ == 0) showAngleStatus(verboseMask + posMask + frcMask + actMask);
       setMtrSpeed(i , MAX_SPEED);
       updateMotorPos();
       //if(smoothForce(i) < -MAX_TENSION) break;
@@ -147,7 +147,7 @@ void extendMotors(float tOut = 10.0) { // extend all motors to limit
     }
     setMtrSpeed(i, 0);
     getAngles();
-    showAngleStatus(verboseMask + posMask + frcMask);
+    showAngleStatus(verboseMask + posMask + frcMask + actMask);
     Serial.print("Done Extending "); Serial.println(i);
   }
   setAllSpeeds(0);
@@ -160,7 +160,7 @@ void retractMotors(float tOut = 10.0) { // retract all motors to limit
     Serial.print("Retracting "); Serial.println(i);
     updateMotorPos();
     while (latestPos[i] > inPos[i] && micros()-started < tOut * 1000000) {
-      if(counts++ == 0) showAngleStatus(verboseMask + posMask + frcMask);
+      if(counts++ == 0) showAngleStatus(verboseMask + posMask + frcMask + actMask);
       setMtrSpeed(i , -MAX_SPEED);
       updateMotorPos();
       //if(smoothForce(i) > MAX_TENSION) break;
@@ -168,7 +168,7 @@ void retractMotors(float tOut = 10.0) { // retract all motors to limit
     }
     setMtrSpeed(i, 0);
     getAngles();
-    showAngleStatus(verboseMask + posMask + frcMask);
+    showAngleStatus(verboseMask + posMask + frcMask + actMask);
     Serial.print("Done Retracting "); Serial.println(i);
   }
   setAllSpeeds(0);
