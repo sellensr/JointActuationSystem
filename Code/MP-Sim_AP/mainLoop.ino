@@ -273,7 +273,8 @@ int doConsoleCommand(String cmd) {
     case 'T':
       doConsoleCommand("K"); // Kill the current gesture!!!
       //Serial.print("Tensioning Motors...  ");
-      tensionMotors(START_TENSION);
+      if(val[0] < 15.) val[0] = 15.;    // give it at least 15 seconds to tension
+      tensionMotors(START_TENSION, val[0]);
       //Serial.println("Motor Tensioning Complete");
       break;
     case 'V': // toggle verbose mode
@@ -364,7 +365,7 @@ int doConsoleCommand(String cmd) {
       Serial.print("  P - move actuators to (P)ositions [mm], e.g. p90,95,96,102,105,107\n");
       Serial.print("  R - fully (R)etract actuators, unhook lines to avoid damage!!!\n");
       Serial.print("  T - (T)ension actuators to starting levels of about ");
-      Serial.print(START_TENSION); Serial.print(" N\n");
+      Serial.print(START_TENSION); Serial.print(" N until timeout [s], e.g. T20\n");
       Serial.print("  V - toggle between (V)erbose mode and CSV console reports.\n");
       Serial.print("  W - calibrate with (W)eights, show raw analog outputs.\n\n");
       waitForSerial();
