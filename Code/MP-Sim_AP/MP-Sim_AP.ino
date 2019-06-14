@@ -1,5 +1,8 @@
 /* To Do:
- *  
+ *  pushing the button should kill the gesture, 
+ *  there should be a log file for CSV data
+ *  the power supply sometimes trips out -- can we get a better supply or reduce current demand?
+ *  rationalize location of global variables
  */
 
 
@@ -13,7 +16,7 @@
 #define DEBUG          2      // determine how much monitoring goes to the console
 #define START_TENSION  7      // starting tendon tension [N], Matt had 15
 #define INC_TENSION    2      // small increase in tension [N], Matt had 5
-#define MAX_TENSION   20      // maximum tension [N] to allow in any tendon
+#define MAX_TENSION   40      // maximum tension [N] to allow in any tendon, 20 too low
 #define STOP_LOAD     30      // stop the motors pushing/pulling against this high a load [N]
 #define MAX_SPEED    400      // maximum speed units with Pololu motor control library
 #define DEF_SPEED     85      // go slower than maximum speed by default

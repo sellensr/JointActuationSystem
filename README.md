@@ -3,7 +3,7 @@ Details of the design of an Actuation System for wrist motion simulation as deta
 
 Further details on the design, manufacture and testing are presented in the thesis found in this repository or [THESIS LINK]
 
-Code original to the thesis is left intact in /Code/AP Source Code and /Code/Aurora AMP Source Code.
+Code original to the thesis is left intact in /Code/AP Source Code and /Code/Aurora AMP Source Code. Current development is taking place in /Code/MP-Sim_AP and Qualisys_AMP
 
 ## Generalization for other joints
 

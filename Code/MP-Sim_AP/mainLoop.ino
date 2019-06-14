@@ -31,7 +31,8 @@ float *savedGestures[GSAVED] = {0};
 String savedGestureNames[GSAVED];
 float thisGesture[GPARMS] = {GNONE, 5, 1};  // current, will change
 unsigned long timeGestureStart = 0;         // the time the current gesture started [us]
-float printTime = 0.5;                      // seconds between console outputs
+float printTime = 0.1;                      // seconds between console outputs
+float logTime = 0.1;                        // seconds between log outputs
 unsigned printVerbose = verboseMask;        // make the console display human friendly
 //----------------------------------------------------------------------------------------------
 
@@ -91,6 +92,7 @@ void setup() {
     }
     gestureFile.close();
   }
+  doConsoleCommand("G1");   // load the first command on the list to pending by default
 
   Serial.print("Initialization Complete...\n\n");
   waitForSerial();
@@ -101,6 +103,7 @@ void setup() {
 void loop() {
   static unsigned long timeLast = 0;
   static unsigned long timeLastPrint = 0;
+  static unsigned long timeLastLog = 0;
   unsigned long timeNow = micros();
   unsigned long dt = timeNow - timeLast;
   static int ret = 0;
@@ -128,10 +131,14 @@ void loop() {
     ret = updateTargetAngles((timeNow - timeGestureStart) / 1000000., thisGesture, tarAng);
     if (ret == 0) goToAllAngles(tarAng);    // act only on valid angles
     if ( (timeNow - timeLastPrint) / 1000000. > printTime) {
-      Serial.print(dt); Serial.print(", "); if (DEBUG > 2) Serial.print("us delta, ");
+      if(DEBUG > 2){ Serial.print(dt); Serial.print(" us delta, ");}
       showAngleStatus(printVerbose + tarMask + actMask + posMask + deltaMask + frcMask);
       timeLastPrint = timeNow;
     } else  waitForSerial();                // let serial output happen
+    if ( (timeNow - timeLastLog) / 1000000. > logTime) {
+      // write data to the log file!!!!
+      timeLastLog = timeNow;
+    }
   } else {                                  // its all over!
     setAllSpeeds(0);                        // stop everything
     waitForSerial();
@@ -280,11 +287,11 @@ int doConsoleCommand(String cmd) {
     case 'V': // toggle verbose mode
       if (printVerbose == verboseMask) {
         printVerbose = 0;
-        Serial.print("CSV output set\n");
+        Serial.print("CSV console output mode set -- good for logging data\n");
       }
       else {
         printVerbose = verboseMask;
-        Serial.print("Verbose output set\n");
+        Serial.print("Verbose console output mode set -- good for humans\n");
       }
       break;
     case 'W': // calibrate with weights
@@ -376,6 +383,7 @@ int doConsoleCommand(String cmd) {
   }
   Serial.print("\nNow pending: (type 'h' for help)\n");
   showGestureItem(-1, pendingGestureName, pendingGesture);
+  showSettings();
   return 0;     // no need to change what you are doing
 }
 
@@ -421,13 +429,14 @@ int updateTargetAngles(float t, float *g, float *ang) {
   if (t > gestureDuration * repeats) return -1; // the gesture is over
   switch (gestureType) {
     case POINT: {           // go to a point
-        for (int i = 0; i < 3; i++) ang[i] = g[i + 4]; // set the point
+        for (int i = 0; i < 3; i++) ang[i] = g[i + 7]; // set the point to the finish point
         break;
       }
     case CIRCUMDUCTION: {   // an ellipsoidal circumduction at a variable angle
         // start with a simple circle, but need to figure out the rest of the parameters
         // there should be a variable centre
         float radius = g[7];
+        if(dir == 0) dir = 1; // force a default direction
         ang[0] = radius * sin(2 * PI * progress) + g[4];
         ang[1] = 0.;
         ang[2] = - radius * cos(2 * PI * progress) * dir + g[6];

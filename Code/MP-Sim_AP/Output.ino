@@ -1,5 +1,23 @@
 void waitForSerial(){
-    while(Serial.availableForWrite() < 60) delayMicroseconds(147);
+    int tStart = micros();
+    while(Serial.availableForWrite() < 30){ 
+      delayMicroseconds(147);
+      if(micros()-tStart > 1000) break;   // give it a limited time     
+    }
+}
+
+void showSettings(){
+  Serial.print("\nHard Coded Settings\n");
+  Serial.print("Tension Base/Incremental/Limit [N]: "); 
+  Serial.print(START_TENSION);   Serial.print(" / ");
+  Serial.print(INC_TENSION);     Serial.print(" / ");
+  Serial.print(MAX_TENSION);     Serial.print("\n");
+  waitForSerial();
+  Serial.print("        Speeds Min/Default/Max [-]: "); 
+  Serial.print(MIN_SPEED);       Serial.print(" / "); 
+  Serial.print(DEF_SPEED);       Serial.print(" / ");
+  Serial.print(MAX_SPEED);       Serial.print("\n");  
+
 }
 
 void showAngleStatus(unsigned mask) { //diagnostic info to monitor, no action taken!
@@ -9,16 +27,20 @@ void showAngleStatus(unsigned mask) { //diagnostic info to monitor, no action ta
   updateMotorPos();
   waitForSerial();
   Serial.print(micros()/1000000.,3);
+  waitForSerial();
   if(mask & tarMask){
     if(verb) Serial.print(" s\n      tarAng: ");
     for(int i = 0;i<3;i++){ 
+      waitForSerial();
       Serial.print(", ");
       Serial.print(tarAng[i]);
     }
   }
+  waitForSerial();
   if(mask & actMask){
     if(verb) Serial.print("\n      actAng: ");
     for(int i = 0;i<3;i++){ 
+      waitForSerial();
       Serial.print(", ");
       Serial.print(actAng[i]);
     }
@@ -27,13 +49,16 @@ void showAngleStatus(unsigned mask) { //diagnostic info to monitor, no action ta
   if(mask & posMask){
     if(verb) Serial.print("\n   latestPos: ");
     for(int i = 0;i < NCH;i++){
+      waitForSerial();
       Serial.print(", ");
       Serial.print(latestPos[i]);
     }
   }
+  waitForSerial();
   if(mask & deltaMask){
     if(verb) Serial.print("\n    deltaPos: ");
     for(int i = 0;i < NCH;i++){
+      waitForSerial();
       Serial.print(", ");
       Serial.print(deltaPos[i]);
     }
@@ -42,6 +67,7 @@ void showAngleStatus(unsigned mask) { //diagnostic info to monitor, no action ta
   if(mask & frcMask){
     if(verb) Serial.print("\n smoothForce: ");
     for(int i = 0;i < NCH;i++){
+      waitForSerial();
       Serial.print(", ");
       Serial.print(smoothForce(i));
     }
@@ -62,6 +88,7 @@ void showAnalogForce(){
     for(int i = 0; i < NCH;i++){
       as[i] = (1.0-w) * as[i] + w * analogRead(_FRC[i]);
       if(timeNow-timeLastPrint > 1000000){
+        waitForSerial();
         Serial.print(as[i],0);
         Serial.print(", ");
       }
