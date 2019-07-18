@@ -9,4 +9,8 @@ Code original to the thesis is left intact in /Code/AP Source Code and /Code/Aur
 
 Original coordinates and angle naming (only two angles, flexion-extension and radial-ulnar) were specific to a system of 4 actuators and the wrist joint. Additions to the /Code structure generalize to 3 x-y-z angles within a right hand coordinate system with y positive distally and z positive vertically upwards. Rotation about the x axis thus corresponds to flexion-extension and rotation about the z axis to radial-ulnar deviation in the original work on the wrist. 
 
+Note that the original was coded to run on an Arduino Due, while the newer code is directed to hardware based on the Teensy 3.5. In addition to the Arduino IDE, you will need to download and installed the teensyduino support libraries.
+
+https://www.pjrc.com/teensy/td_download.html
+
 2019-04-26: Newer code for MP-Sim starts with an alpha version deceptively labelled as v2.0 to distinguish it from the original work by Matt Pearson. It is purely developmental for the moment. 
